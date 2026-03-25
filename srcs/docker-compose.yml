@@ -38,12 +38,12 @@ services:
 volumes:
   wp_vol:
     driver_opts:
-      device: /home/dbozic/data/wp/
+      device: /home/vboxuser/data/wp/
       o: "bind"
       type: "none"
   db_vol:
     driver_opts:
-      device: /home/dbozic/data/db/
+      device: /home/vboxuser/data/db/
       o: "bind"
       type: "none"
 

@@ -6,7 +6,7 @@ set -e
 sed -i 's/bind-address .*=.*/bind-address = 0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 
 # Start MariaDB temporarily in the background without networking to run setup commands
-mysqld_safe --skip-networking --skip-grant-tables &
+mysqld_safe --skip-networking &
 
 # Wait a few seconds for the server to be ready
 sleep 5

@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-LOGIN=dbozic
+LOGIN=vboxuser
 
 all: up
 
@@ -22,10 +22,10 @@ create:
 		sudo chmod 777 /home/${LOGIN}/data/wp
 
 up: create
-		docker-compose -f srcs/docker-compose.yml up -d --build
+		sudo docker-compose -f srcs/docker-compose.yml up -d --build
 
 down:
-		docker-compose -f srcs/docker-compose.yml down
+		sudo docker-compose -f srcs/docker-compose.yml down
 
 clean:
 		sudo rm -rf /home/${LOGIN}/data
@@ -37,3 +37,12 @@ fclean: down clean
 re: fclean up
 
 .PHONY: create up down clean fclean re
+
+#Warning logs:
+#debconf: delaying package configuration, since apt-utils is not installed
+#WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+#
+#
+#
+#
+#
