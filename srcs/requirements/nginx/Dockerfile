@@ -1,19 +1,25 @@
 FROM debian:bookworm
+
+RUN apt-get update \
+	&& apt-get install -y nginx openssl \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+
+ARG DOMAIN
+ENV DOMAIN=${DOMAIN}
+
+# TODO fix CN=$DOMAIN being empty
+RUN mkdir -p /etc/nginx/ssl \
+	&& openssl req -x509 -nodes -days 365 \
+	-subj "/C=FR/ST=Paris/L=Paris/O=42/OU=Inception/CN=$DOMAIN" \
+	-newkey rsa:2048 \
+	-keyout /etc/nginx/ssl/cert.key \
+	-out /etc/nginx/ssl/cert.crt
+
+COPY ./tools/nginx.conf /etc/nginx/nginx.conf
+COPY ./tools/default.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 443
 
-RUN apt update -y && \
-	apt install -y --fix-missing --no-install-recommends nginx openssl && \
-	rm -fr /var/lib/apt/lists/*
-
-RUN mkdir /etc/nginx/certifications && \
-	 openssl req -x509 -nodes -days 365 \
-	-newkey rsa:2048 \
-	-keyout /etc/nginx/certifications/nginx.key \
-	-out /etc/nginx/certifications/nginx.crt \
-    -subj "/C=US/ST=State/L=City/O=Organization/OU=Org/CN=localhost"
-#TODO move the .key to secrets
-# Copy server config
-COPY ./tools/nginxdefault.conf /etc/nginx/sites-available/default
-
-# Start server
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# deamon off; is needed for the container to stay alive.
+CMD ["nginx", "-g", "daemon off;"]

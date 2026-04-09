@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-LOGIN=vboxuser
+LOGIN=dbozic
 
 all: up
 
@@ -18,8 +18,10 @@ create:
 		mkdir -p /home/${LOGIN}/data/db
 		mkdir -p /home/${LOGIN}/data/wp
 		sudo sh -c 'echo "127.0.0.1 ${LOGIN}.42.fr" >> /etc/hosts'
-		sudo chmod 777 /home/${LOGIN}/data/db
-		sudo chmod 777 /home/${LOGIN}/data/wp
+		sudo chmod 755 /home/${LOGIN}
+		sudo chmod 755 /home/${LOGIN}/data
+		sudo chmod 775 /home/${LOGIN}/data/db
+		sudo chmod 775 /home/${LOGIN}/data/wp
 
 up: create
 		sudo docker-compose -f srcs/docker-compose.yml up -d --build
@@ -33,16 +35,9 @@ clean:
 		docker system prune -a -f
 
 fclean: down clean
+		docker volume rm srcs_wp_vol
+		docker volume rm srcs_db_vol
 
 re: fclean up
 
 .PHONY: create up down clean fclean re
-
-#Warning logs:
-#debconf: delaying package configuration, since apt-utils is not installed
-#WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
-#
-#
-#
-#
-#

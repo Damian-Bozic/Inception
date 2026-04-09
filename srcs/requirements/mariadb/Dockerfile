@@ -1,11 +1,22 @@
 FROM debian:bullseye
-EXPOSE 3306
 
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends --fix-missing mariadb-server && \
-    rm -fr /var/lib/apt/lists/*
+	apt-get install -y  \
+	--no-install-recommends \
+	--fix-missing mariadb-server \
+	&& rm -fr /var/lib/apt/lists/*
 
-COPY ./tools/mariadbscript.sh /
-RUN chmod 777 ./mariadbscript.sh
+RUN mkdir -p /run/mysqld \
+	&& chown -R mysql:mysql /run/mysqld
 
-CMD ["./mariadbscript.sh"]
+# COPY ./tools/my_custom.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+# RUN chmod 775 /etc/mysql/mariadb.conf.d/50-server.cnf
+
+RUN sed -i 's/^bind-address\s*=.*$/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+COPY ./tools/initDataBase.sql /docker-entrypoint-initdb.d/
+RUN chmod 775 /docker-entrypoint-initdb.d/initDataBase.sql
+
+#metadata, doesn't actually port to host for external access
+EXPOSE 3306
+ENTRYPOINT ["mysqld"]
