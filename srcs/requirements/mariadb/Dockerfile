@@ -14,9 +14,9 @@ RUN mkdir -p /run/mysqld \
 
 RUN sed -i 's/^bind-address\s*=.*$/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY ./tools/initDataBase.sql /docker-entrypoint-initdb.d/
-RUN chmod 775 /docker-entrypoint-initdb.d/initDataBase.sql
+COPY ./tools/mariadb-setup.sh /usr/local/bin/mariadb-setup.sh
+RUN chmod 775 /usr/local/bin/mariadb-setup.sh
 
 #metadata, doesn't actually port to host for external access
 EXPOSE 3306
-ENTRYPOINT ["mysqld"]
+ENTRYPOINT ["/usr/local/bin/mariadb-setup.sh"]

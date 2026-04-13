@@ -21,12 +21,13 @@ services:
     - inception
     restart: on-failure
 
-
   nginx:
     container_name: nginx
     depends_on:
     - wordpress
     build: ./requirements/nginx/
+    volumes:
+    - wp_vol:/var/www/html/
     env_file: .env
     networks:
     - inception
