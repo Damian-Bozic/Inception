@@ -1,6 +1,40 @@
 #!/bin/sh
 
 set -eu
+
+wordpress_admin_user="${WORDPRESS_ADMIN_USER:-}"
+if [ -n "${wordpress_admin_user}" ]; then
+  wordpress_admin_user_lower=$(printf '%s' "${wordpress_admin_user}" | tr '[:upper:]' '[:lower:]')
+  case "${wordpress_admin_user_lower}" in
+    *admin*)
+      echo "[wordpress-setup] Error: WORDPRESS_ADMIN_USER cannot contain 'admin' in any form (got '${wordpress_admin_user}')."
+      exit 1
+      ;;
+  esac
+fi
+
+wp_admin_user="${WP_ADMIN_USER:-}"
+if [ -n "${wp_admin_user}" ]; then
+  wp_admin_user_lower=$(printf '%s' "${wp_admin_user}" | tr '[:upper:]' '[:lower:]')
+  case "${wp_admin_user_lower}" in
+    *admin*)
+      echo "[wordpress-setup] Error: WP_ADMIN_USER cannot contain 'admin' in any form (got '${wp_admin_user}')."
+      exit 1
+      ;;
+  esac
+fi
+
+admin_user="${ADMIN_USER:-}"
+if [ -n "${admin_user}" ]; then
+  admin_user_lower=$(printf '%s' "${admin_user}" | tr '[:upper:]' '[:lower:]')
+  case "${admin_user_lower}" in
+    *admin*)
+      echo "[wordpress-setup] Error: ADMIN_USER cannot contain 'admin' in any form (got '${admin_user}')."
+      exit 1
+      ;;
+  esac
+fi
+
 echo "[wordpress-setup] Starting WordPress container init"
 echo "[wordpress-setup] Waiting for MariaDB at ${WORDPRESS_DB_HOST}"
 
