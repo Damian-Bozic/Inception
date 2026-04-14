@@ -20,18 +20,19 @@ all: up
 create:
 		mkdir -p /home/${LOGIN}/data/db
 		mkdir -p /home/${LOGIN}/data/wp
-		sudo sh -c 'grep -q "127.0.0.1.*${LOGIN}\.42\.fr" /etc/hosts || echo "127.0.0.1 ${LOGIN}.42.fr" >> /etc/hosts'
-		if ! id -nG ${LOGIN} | grep -qw docker; then sudo usermod -aG docker ${LOGIN}; cat ${BOOT_ID_FILE} > ${REBOOT_STAMP}; echo "Docker group assigned to ${LOGIN}."; echo "System restart required before continuing."; echo "Reboot, then run: make"; \
+		@sudo sh -c 'grep -q "127.0.0.1.*${LOGIN}\.42\.fr" /etc/hosts || echo "127.0.0.1 ${LOGIN}.42.fr" >> /etc/hosts'
+		@echo "Added ${LOGIN}.42.fr to /etc/hosts"
+		@if ! id -nG ${LOGIN} | grep -qw docker; then sudo usermod -aG docker ${LOGIN}; cat ${BOOT_ID_FILE} > ${REBOOT_STAMP}; echo "Docker group assigned to ${LOGIN}."; echo "System restart required before continuing."; echo "Reboot, then run: make"; \
 			exit 1; \
 		fi
-		if [ -f ${REBOOT_STAMP} ] && [ "`cat ${BOOT_ID_FILE}`" = "`cat ${REBOOT_STAMP}`" ]; then echo "\n\nSystem restart is still required before continuing."; echo "Reboot, then run: make"; \
+		@if [ -f ${REBOOT_STAMP} ] && [ "`cat ${BOOT_ID_FILE}`" = "`cat ${REBOOT_STAMP}`" ]; then echo "System restart is still required before continuing."; echo "Reboot, then run: make"; \
 			exit 1; \
 		fi
-		rm -f ${REBOOT_STAMP}
-		sudo chmod 755 /home/${LOGIN}
-		sudo chmod 755 /home/${LOGIN}/data
-		sudo chmod 775 /home/${LOGIN}/data/db
-		sudo chmod 775 /home/${LOGIN}/data/wp
+		@rm -f ${REBOOT_STAMP}
+		@sudo chmod 755 /home/${LOGIN}
+		@sudo chmod 755 /home/${LOGIN}/data
+		@sudo chmod 775 /home/${LOGIN}/data/db
+		@sudo chmod 775 /home/${LOGIN}/data/wp
 
 up: create
 		sudo docker-compose -f srcs/docker-compose.yml up -d --build
@@ -40,7 +41,8 @@ down:
 		sudo docker-compose -f srcs/docker-compose.yml down
 
 clean:
-		sudo sed -i '/${LOGIN}\.42\.fr/d' /etc/hosts
+		@sudo sed -i '/${LOGIN}\.42\.fr/d' /etc/hosts
+		@echo "Removed ${LOGIN}.42.fr from /etc/hosts"
 		sudo docker system prune -a -f
 
 fclean: down clean
