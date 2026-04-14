@@ -9,9 +9,6 @@ RUN apt-get update -y && \
 RUN mkdir -p /run/mysqld \
 	&& chown -R mysql:mysql /run/mysqld
 
-# COPY ./tools/my_custom.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-# RUN chmod 775 /etc/mysql/mariadb.conf.d/50-server.cnf
-
 RUN sed -i 's/^bind-address\s*=.*$/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY ./tools/mariadb-setup.sh /usr/local/bin/mariadb-setup.sh
