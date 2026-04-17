@@ -17,6 +17,7 @@ Your user must have sudo permissions.
 
 Required project configuration:
 +Makefile: set LOGIN to your local Linux username
++Create your own srcs/.env from srcs/.env_example
 +srcs/.env: define DOMAIN, MARIADB_*, WORDPRESS_DB_*
 +WORDPRESS_DB_HOST must be mariadb
 +srcs/requirements/nginx/tools/default.conf: server_name should match DOMAIN

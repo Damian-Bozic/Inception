@@ -25,6 +25,7 @@ Notes:
 +A self-signed certificate is used, so browser warnings are expected.
 
 *-Where to find and manage credentials*
+Before first run, create your own srcs/.env from srcs/.env_example.
 Credentials are stored in srcs/.env.
 Required variables include:
 +DOMAIN

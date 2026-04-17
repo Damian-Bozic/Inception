@@ -10,7 +10,7 @@ The goal is reproducible infrastructure: same build steps, same runtime behavior
 +srcs/requirements/mariadb/: MariaDB image definition and bootstrap logic
 +srcs/requirements/wordpress/: WordPress + PHP-FPM image and startup logic
 +srcs/requirements/nginx/: HTTPS reverse-proxy/web-server config and certificate setup
-+srcs/.env: runtime configuration and credentials injected into containers
++srcs/.env_example: template used to create your own srcs/.env runtime configuration
 +Makefile: single command interface for create/up/down/clean/fclean workflows
 
 *-Main design choices*
@@ -51,7 +51,8 @@ Host machine dependencies:
 +Internet access (images/packages/WordPress download during build)
 
 Project-specific required configuration:
-+srcs/.env must exist and contain at minimum:
++You must create your own srcs/.env from srcs/.env_example before first run
++srcs/.env must contain at minimum:
 DOMAIN
 MARIADB_ROOT_PASSWORD
 MARIADB_DATABASE
@@ -86,7 +87,7 @@ exit
 git clone https://github.com/Damian-Bozic/Inception
 cd Inception
 6. Edit Makefile and set LOGIN to your Linux username.
-7. Edit srcs/.env and fill all variables listed above.
+7. Create your own srcs/.env from srcs/.env_example, then fill all variables listed above.
 8. If your domain changed, update nginx server_name in srcs/requirements/nginx/tools/default.conf.
 9. Run make.
 10. If make asks for reboot (docker group assignment), reboot and run make again.
@@ -99,7 +100,7 @@ docker ps
 git clone https://github.com/Damian-Bozic/Inception
 cd Inception
 3. Edit Makefile and set LOGIN to your Linux username.
-4. Edit srcs/.env and fill all required variables.
+4. Create your own srcs/.env from srcs/.env_example, then fill all required variables.
 5. If needed, update nginx server_name in srcs/requirements/nginx/tools/default.conf to match DOMAIN.
 6. Run make.
 7. If prompted for reboot, reboot once and run make again.
