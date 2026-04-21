@@ -20,6 +20,10 @@ Open your browser and go to:
 +Website: https://YourLogin.42.fr
 +Admin panel: https://YourLogin.42.fr/wp-admin
 Notes:
++On first run, WordPress installs itself automatically and creates the admin account from srcs/.env.
++Use WORDPRESS_ADMIN_USER and WORDPRESS_ADMIN_PASSWORD from srcs/.env to log in.
++If the site is still initializing, wait for the containers to be ready and refresh.
++You can also use https://YourLogin.42.fr/wp-login.php for the login form.
 +YourLogin.42.fr must match LOGIN from the Makefile.
 +DOMAIN in srcs/.env and server_name in nginx default.conf should match.
 +A self-signed certificate is used, so browser warnings are expected.
@@ -37,6 +41,10 @@ Required variables include:
 +WORDPRESS_DB_HOST
 +WORDPRESS_DB_USER
 +WORDPRESS_DB_PASSWORD
++WORDPRESS_SITE_TITLE
++WORDPRESS_ADMIN_USER
++WORDPRESS_ADMIN_PASSWORD
++WORDPRESS_ADMIN_EMAIL
 Credential management recommendations:
 +Restrict permissions on srcs/.env
 +Do not publish real secrets in public repositories

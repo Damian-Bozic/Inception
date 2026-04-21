@@ -18,9 +18,10 @@ Your user must have sudo permissions.
 Required project configuration:
 +Makefile: set LOGIN to your local Linux username
 +Create your own srcs/.env from srcs/.env_example
-+srcs/.env: define DOMAIN, MARIADB_*, WORDPRESS_DB_*
++srcs/.env: define DOMAIN, MARIADB_*, WORDPRESS_DB_* and the WordPress first-run admin values
 +WORDPRESS_DB_HOST must be mariadb
 +srcs/requirements/nginx/tools/default.conf: server_name should match DOMAIN
++The WordPress startup script performs the initial wp core install automatically on first boot.
 
 Secrets handling:
 +Current setup uses srcs/.env (not Docker secrets)
@@ -35,6 +36,8 @@ What this does:
 +Adds ${LOGIN}.42.fr to /etc/hosts
 +Adds user to docker group if needed (reboot required once in that case)
 +Runs docker-compose -f srcs/docker-compose.yml up -d --build
+First-run behavior:
++WordPress waits for MariaDB, copies the core files into the persistent volume, creates wp-config.php, and runs wp-cli install once.
 
 Related lifecycle commands:
 +make down

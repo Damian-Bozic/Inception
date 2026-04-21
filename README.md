@@ -62,8 +62,13 @@ WORDPRESS_DB_NAME
 WORDPRESS_DB_HOST (must be mariadb)
 WORDPRESS_DB_USER
 WORDPRESS_DB_PASSWORD
++WORDPRESS_SITE_TITLE
++WORDPRESS_ADMIN_USER
++WORDPRESS_ADMIN_PASSWORD
++WORDPRESS_ADMIN_EMAIL
 +Makefile variable LOGIN must match your local Linux username
 +Nginx server_name in srcs/requirements/nginx/tools/default.conf should match your DOMAIN
++The WordPress container performs the initial wp-core install automatically on first boot.
 
 Dependencies installed automatically inside containers (no host install needed):
 +MariaDB container: mariadb-server
@@ -113,7 +118,8 @@ docker logs wordpress
 docker logs nginx
 
 *-Running*
-+Run "make" in the Inception folder. It can take some time. Once you see green text showing that mariadb, wordpress, and nginx is running, you should be able to visit the site at YourUserName.42.fr
++Run "make" in the Inception folder. It can take some time. On first boot, WordPress initializes itself automatically and creates the admin account from srcs/.env.
++Once you see green text showing that mariadb, wordpress, and nginx is running, you should be able to visit the site at YourUserName.42.fr and log in at /wp-admin.
 +If you encounter errors you can use the command "docker ps" to check if all three containers are running ok, or something like "docker logs containerName" to inspect their logs.
 *-Turning off*
 +Run "make down". This should turn everything off, while keeping any data stored for the next time you start the server again.

@@ -23,16 +23,7 @@ fi
 # super safe install, it tries to install mariadb, if it fails, it goes the mysql route
 
 echo "[mariadb-setup] Starting temporary mysqld for bootstrap"
-mysqld --user=mysql --skip-networking=1 --socket=/run/mysqld/mysqld.sock --datadir=/var/lib/mysql &
-pid="$!"
-
-until mysqladmin --socket=/run/mysqld/mysqld.sock ping --silent >/dev/null 2>&1; do
-    sleep 1
-done
-
-echo "[mariadb-setup] Temporary mysqld is ready; creating database and user"
-
-mysql --protocol=socket --socket=/run/mysqld/mysqld.sock -uroot <<EOF
+cat > /tmp/mariadb-bootstrap.sql <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MARIADB_ROOT_PASSWORD}';
 CREATE DATABASE IF NOT EXISTS \`${MARIADB_DATABASE}\`;
 CREATE USER IF NOT EXISTS '${MARIADB_USER}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';
@@ -43,6 +34,15 @@ GRANT ALL PRIVILEGES ON \`${MARIADB_DATABASE}\`.* TO '${MARIADB_USER}'@'%';
 GRANT ALL PRIVILEGES ON \`${MARIADB_DATABASE}\`.* TO '${WORDPRESS_DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
+
+mysqld --user=mysql --skip-networking=1 --socket=/run/mysqld/mysqld.sock --datadir=/var/lib/mysql --init-file=/tmp/mariadb-bootstrap.sql &
+pid="$!"
+
+until mysqladmin --socket=/run/mysqld/mysqld.sock ping --silent >/dev/null 2>&1; do
+    sleep 1
+done
+
+echo "[mariadb-setup] Bootstrap SQL has been loaded by mysqld"
 
 echo "[mariadb-setup] Bootstrap complete; shutting down temporary mysqld"
 
