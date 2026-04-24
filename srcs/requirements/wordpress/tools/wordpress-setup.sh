@@ -77,6 +77,35 @@ else
   echo "[wordpress-setup] WordPress is already installed"
 fi
 
+regular_user="${WORDPRESS_USER:-}"
+regular_user_password="${WORDPRESS_PASSWORD:-}"
+regular_user_email="${WORDPRESS_USER_EMAIL:-}"
+
+if [ -n "${regular_user}${regular_user_password}${regular_user_email}" ] && \
+   { [ -z "${regular_user}" ] || [ -z "${regular_user_password}" ] || [ -z "${regular_user_email}" ]; }; then
+  echo "[wordpress-setup] Error: WORDPRESS_USER, WORDPRESS_PASSWORD, and WORDPRESS_USER_EMAIL must all be set together"
+  exit 1
+fi
+
+if [ -n "${regular_user}" ]; then
+  if wp user get "${regular_user}" --allow-root --path=/var/www/html >/dev/null 2>&1; then
+    echo "[wordpress-setup] Updating default non-admin user '${regular_user}'"
+    wp user update "${regular_user}" \
+      --allow-root \
+      --path=/var/www/html \
+      --user_pass="${regular_user_password}" \
+      --user_email="${regular_user_email}" \
+      --role=author
+  else
+    echo "[wordpress-setup] Creating default non-admin user '${regular_user}'"
+    wp user create "${regular_user}" "${regular_user_email}" \
+      --allow-root \
+      --path=/var/www/html \
+      --user_pass="${regular_user_password}" \
+      --role=author
+  fi
+fi
+
 chown -R www-data:www-data /var/www/html
 
 echo "WordPress setup completed. Starting php-fpm..."
