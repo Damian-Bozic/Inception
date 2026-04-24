@@ -16,6 +16,7 @@ Required project configuration:
 + Makefile: set LOGIN to your local Linux username
 + Create your own srcs/.env from srcs/.env_example
 + srcs/.env: define DOMAIN, MARIADB_*, WORDPRESS_DB_* and the WordPress first-run admin values
++ Optional regular user provisioning: define WORDPRESS_USER, WORDPRESS_PASSWORD, and WORDPRESS_USER_EMAIL together (or leave all three unset)
 + WORDPRESS_DB_HOST must be mariadb
 + srcs/requirements/nginx/tools/default.conf: server_name should match DOMAIN
 + The WordPress startup script performs the initial wp core install automatically on first boot.
@@ -36,6 +37,8 @@ What this does:
 + Runs docker-compose -f srcs/docker-compose.yml up -d --build
 First-run behavior:
 + WordPress waits for MariaDB, copies the core files into the persistent volume, creates wp-config.php, and runs wp-cli install once.
++ If WORDPRESS_USER, WORDPRESS_PASSWORD, and WORDPRESS_USER_EMAIL are provided, startup also creates a default non-admin WordPress user with role=author.
++ On subsequent starts, if the user already exists, startup updates that user's email/password and keeps role=author.
 
 Related lifecycle commands:
 + make down

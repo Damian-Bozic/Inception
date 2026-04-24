@@ -25,10 +25,12 @@ Open your browser and go to:
 
 Notes:
 + On first run, WordPress installs itself automatically and creates the admin account from srcs/.env.
++ If WORDPRESS_USER, WORDPRESS_PASSWORD, and WORDPRESS_USER_EMAIL are set, WordPress also creates a default non-admin user (author role).
++ On later restarts, if that user already exists, the startup script updates its password/email and keeps the role non-admin.
 + Use WORDPRESS_ADMIN_USER and WORDPRESS_ADMIN_PASSWORD from srcs/.env to log in.
 + If the site is still initializing, wait for the containers to be ready and refresh.
 + YourLogin.42.fr must match LOGIN from the Makefile.
-+ DOMAIN in srcs/.env must match the domain found in the makefile
++ The first part of DOMAIN (DOMAIN.42.fr) in srcs/.env must match the domain found in the makefile
 + A self-signed certificate is used, so browser warnings are expected.
 
 *-Where to find and manage credentials*
@@ -48,6 +50,11 @@ Required variables include:
 + WORDPRESS_ADMIN_USER
 + WORDPRESS_ADMIN_PASSWORD
 + WORDPRESS_ADMIN_EMAIL
+
+Optional default user variables (set all three together or leave all unset):
++ WORDPRESS_USER
++ WORDPRESS_PASSWORD
++ WORDPRESS_USER_EMAIL
 
 Credential management recommendations:
 + Restrict permissions on srcs/.env

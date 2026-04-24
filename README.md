@@ -68,6 +68,7 @@ srcs/.env must contain at minimum:
 + WORDPRESS_ADMIN_USER
 + WORDPRESS_ADMIN_PASSWORD
 + WORDPRESS_ADMIN_EMAIL
++ Optional regular user values (set all three together or leave all unset): WORDPRESS_USER, WORDPRESS_PASSWORD, WORDPRESS_USER_EMAIL
 + Makefile variable LOGIN must match your local Linux username
 + Nginx server_name in srcs/requirements/nginx/tools/default.conf should match your DOMAIN
 + The WordPress container performs the initial wp-core install automatically on first boot.
@@ -120,6 +121,8 @@ Dependencies installed automatically inside containers (no host install needed):
 
 *-Running*
 + Run "make" in the Inception folder. It can take some time. On first boot, WordPress initializes itself automatically and creates the admin account from srcs/.env.
++ If WORDPRESS_USER, WORDPRESS_PASSWORD, and WORDPRESS_USER_EMAIL are set, startup also creates a default non-admin user with role=author.
++ On later restarts, if that user already exists, startup updates its password/email and keeps role=author.
 + Once you see green text showing that mariadb, wordpress, and nginx is running, you should be able to visit the site at YourUserName.42.fr and log in at /wp-admin.
 + If you encounter errors you can use the command "docker ps" to check if all three containers are running ok, or something like "docker logs containerName" to inspect their logs.
 
